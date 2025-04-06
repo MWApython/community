@@ -285,6 +285,7 @@ tool = st.sidebar.radio("📂 Select a Tool:", [
     "🧘 Mental Health",
     "🌏 Multilingual Resources"
 ])
+st.markdown(f"## 🛠️ {tool}")
 
 if tool == "🔍 Local SEO Analyzer":
     local_seo_analyzer()
