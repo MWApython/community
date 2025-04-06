@@ -269,160 +269,144 @@ def gov_support_resources():
     else:
         st.info("No live updates available at the moment.")
 
-# Add tool interface with tabs
-tabs = st.tabs([
+tool = st.sidebar.radio("📂 Select a Tool:", [
     "🔍 Local SEO Analyzer",
     "🤖 Business Name Generator",
     "📋 Business Health Report",
     "✉️ Email Signature Generator",
     "🛠️ Gov Help & Resources",
-    "📡 Live Cyber & Business Updates (ACSC)",
+    "📡 Cybersecurity Updates",
     "📅 Important Dates",
-    "📄 Free Legal Templates",
-    "💰 Grant Finder Guide",
+    "📄 Legal Templates",
+    "💰 Grant Finder",
     "🧮 Profit Calculator",
-    "🎨 Free Design Tools",
-    "📍 Local Directory Guide",
-    "🧘 Mental Health & Wellbeing",
+    "🎨 Design Tools",
+    "📍 Directory Guide",
+    "🧘 Mental Health",
     "🌏 Multilingual Resources"
 ])
 
-with tabs[0]:
+if tool == "🔍 Local SEO Analyzer":
     local_seo_analyzer()
 
-with tabs[1]:
+elif tool == "🤖 Business Name Generator":
     business_name_generator()
 
-with tabs[2]:
+elif tool == "📋 Business Health Report":
     business_health_check()
 
-with tabs[3]:
+elif tool == "✉️ Email Signature Generator":
     email_signature_generator()
-with tabs[4]:
-    gov_support_resources()
-with tabs[5]:
-    st.header("📡 Live Cyber & Business Updates (ACSC)")
-    feed_url = "https://www.cyber.gov.au/rss"
-    feed = feedparser.parse(feed_url)
 
+elif tool == "🛠️ Gov Help & Resources":
+    st.header("🛠️ Australian Government Help & Resources")
+    st.markdown("""
+    Discover government tools and guidance for small business owners in Australia.
+
+    - [business.gov.au – Main Portal](https://business.gov.au)
+    - [ABN Registration](https://abr.gov.au)
+    - [ATO Business Help](https://www.ato.gov.au/Business/)
+    - [Digital Business Kits](https://business.gov.au/Grants-and-Programs)
+    - [Cyber.gov.au](https://www.cyber.gov.au/)
+    """)
+
+elif tool == "📡 Cybersecurity Updates":
+    import feedparser
+    st.header("📡 Live Cyber & Business Updates (ACSC)")
+    feed = feedparser.parse("https://www.cyber.gov.au/rss")
     if feed.entries:
         for entry in feed.entries[:10]:
-            st.markdown(f"🔸 [{entry.title}]({entry.link})")
+            st.markdown(f"🔹 [{entry.title}]({entry.link})")
             st.caption(f"🗓 {entry.published}")
     else:
-        st.info("No live updates available at the moment.")
-with tabs[6]:
-    st.header("📅 Important Business Dates")
-    st.markdown("""
-    Keep track of critical business deadlines in Australia:
+        st.info("No updates found.")
 
-    - **Quarterly BAS Due**: 28th of the month following each quarter
-    - **EOFY**: June 30  
-    - **Tax Return Deadline**: October 31 (or later if using a tax agent)
-    - **Super Guarantee Due Dates**: 28th of each quarter
-    - [📌 ATO Key Dates](https://www.ato.gov.au/General/Key-dates/)
+elif tool == "📅 Important Dates":
+    st.header("📅 Important Business Dates in Australia")
+    st.markdown("""
+    - **BAS Due**: 28th after each quarter
+    - **Super Due**: 28th Jan / Apr / Jul / Oct
+    - **Tax Return Deadline**: Oct 31  
+    - [📌 ATO Calendar](https://www.ato.gov.au/General/Key-dates/)
     """)
 
-with tabs[7]:
-    st.header("📄 Free Legal Templates for Small Businesses")
+elif tool == "📄 Legal Templates":
+    st.header("📄 Free Legal Templates")
     st.markdown("""
-    - [🔒 Privacy Policy (AU Compliant)](https://legalvision.com.au/free-privacy-policy-template-australia/)
-    - [📃 Terms & Conditions Template](https://www.lawpath.com.au/templates/website-terms-and-conditions-template)
-    - [📝 Simple Service Agreement](https://www.business.gov.au/planning/templates-and-tools/sample-contracts-and-templates)
-    - [🔖 NDA (Non-Disclosure Agreement)](https://www.business.vic.gov.au/tools-and-templates/ndas)
+    - [Privacy Policy](https://legalvision.com.au/free-privacy-policy-template-australia/)
+    - [Terms & Conditions](https://www.lawpath.com.au/templates/website-terms-and-conditions-template)
+    - [NDA Template](https://www.business.vic.gov.au/tools-and-templates/ndas)
     """)
 
-with tabs[8]:
-    st.header("💰 Grant Finder & Government Support")
+elif tool == "💰 Grant Finder":
+    st.header("💰 Grants & Funding Finder")
     st.markdown("""
-    Discover funding & grant opportunities for your small business:
-
     - [business.gov.au Grants Finder](https://business.gov.au/grants-and-programs)
     - [GrantConnect](https://www.grants.gov.au/)
-    - [ATO Support for Small Business](https://www.ato.gov.au/business/)
     - [NSW Business Grants](https://www.service.nsw.gov.au/)
     """)
 
-with tabs[9]:
+elif tool == "🧮 Profit Calculator":
+    import matplotlib.pyplot as plt
     st.header("🧮 Advanced Small Business Profit Calculator")
-
     col1, col2 = st.columns(2)
     with col1:
         revenue = st.number_input("Monthly Revenue ($)", min_value=0)
         cost = st.number_input("Cost of Goods Sold ($)", min_value=0)
     with col2:
-        overheads = st.number_input("Monthly Overheads / Fixed Costs ($)", min_value=0)
-        hours_worked = st.number_input("Monthly Work Hours (for hourly rate calc)", min_value=1, value=160)
+        overheads = st.number_input("Monthly Overheads ($)", min_value=0)
+        hours = st.number_input("Monthly Work Hours", value=160)
 
-    if st.button("💡 Calculate My Business Metrics"):
-        gross_profit = revenue - cost
-        net_profit = gross_profit - overheads
-        profit_margin = (net_profit / revenue) * 100 if revenue else 0
-        annual_profit = net_profit * 12
-        hourly_rate = net_profit / hours_worked if hours_worked else 0
-        breakeven_revenue = overheads + cost
+    if st.button("Calculate My Profit"):
+        gross = revenue - cost
+        net = gross - overheads
+        margin = (net / revenue) * 100 if revenue else 0
+        annual = net * 12
+        hourly = net / hours if hours else 0
+        break_even = cost + overheads
 
-        st.subheader("📊 Your Results")
-        col3, col4 = st.columns(2)
-        with col3:
-            st.success(f"💰 Gross Profit: ${gross_profit:,.2f}")
-            st.success(f"📉 Net Monthly Profit: ${net_profit:,.2f}")
-            st.info(f"🧮 Profit Margin: {profit_margin:.2f}%")
-        with col4:
-            st.info(f"📆 Annual Profit Estimate: ${annual_profit:,.2f}")
-            st.info(f"💸 Breakeven Revenue Needed: ${breakeven_revenue:,.2f}")
-            st.warning(f"⏱️ Effective Hourly Rate: ${hourly_rate:,.2f}")
-
-        # Optional chart
-        labels = ["Revenue", "COGS", "Overheads", "Net Profit"]
-        values = [revenue, cost, overheads, net_profit]
+        st.success(f"Gross Profit: ${gross}")
+        st.success(f"Net Profit: ${net}")
+        st.info(f"Margin: {margin:.2f}%")
+        st.info(f"Annual: ${annual}")
+        st.warning(f"Hourly Rate: ${hourly:.2f}")
+        st.caption(f"Breakeven Revenue: ${break_even}")
 
         fig, ax = plt.subplots()
-        ax.bar(labels, values, color=["#007ACC", "#FF6347", "#FFA500", "#28a745"])
-        ax.set_ylabel("Amount ($)")
-        ax.set_title("💼 Monthly Business Financial Summary")
+        ax.bar(["Revenue", "COGS", "Overheads", "Net"], [revenue, cost, overheads, net])
+        ax.set_ylabel("AUD ($)")
         st.pyplot(fig)
 
-
-with tabs[10]:
+elif tool == "🎨 Design Tools":
     st.header("🎨 Free Business Design Tools")
     st.markdown("""
-    - [Canva for Business](https://www.canva.com/) – Easy social & print designs  
-    - [Hatchful by Shopify](https://hatchful.shopify.com/) – Free logo maker  
-    - [Remove.bg](https://www.remove.bg/) – Remove image backgrounds  
-    - [Looka](https://looka.com/) – AI-powered brand kits  
+    - [Canva](https://www.canva.com/)
+    - [Hatchful](https://hatchful.shopify.com/)
+    - [Remove.bg](https://www.remove.bg/)
+    - [Looka](https://looka.com/)
     """)
 
-with tabs[11]:
-    st.header("📍 Local Directory Submission Guide")
+elif tool == "📍 Directory Guide":
+    st.header("📍 Local Business Directories")
     st.markdown("""
-    Get your business listed for better visibility & SEO:
-
-    - [📘 Yellow Pages](https://www.yellowpages.com.au/)
-    - [📘 StartLocal](https://www.startlocal.com.au/)
-    - [📘 AussieWeb](https://www.aussieweb.com.au/)
-    - [📘 HotFrog](https://www.hotfrog.com.au/)
-    - [📘 TrueLocal](https://www.truelocal.com.au/)
-    - [📘 Yelp AU](https://www.yelp.com.au/)
+    - [Yellow Pages](https://www.yellowpages.com.au/)
+    - [StartLocal](https://www.startlocal.com.au/)
+    - [TrueLocal](https://www.truelocal.com.au/)
+    - [Hotfrog](https://www.hotfrog.com.au/)
     """)
 
-with tabs[12]:
-    st.header("🧘 Mental Health & Business Wellbeing")
+elif tool == "🧘 Mental Health":
+    st.header("🧘 Business Owner Wellbeing")
     st.markdown("""
-    Running a business is tough. Here are support resources:
-
-    - [Beyond Blue – Mental Health Help](https://www.beyondblue.org.au/)
-    - [Heads Up – Workplace Wellbeing](https://www.headsup.org.au/)
-    - [Small Business Support](https://www.business.gov.au/planning/emergency-management/mental-health-support)
-    - [RU OK? for Business](https://www.ruok.org.au/workplace)
+    - [Beyond Blue](https://www.beyondblue.org.au/)
+    - [RUOK for Workplaces](https://www.ruok.org.au/workplace)
+    - [HeadsUp](https://www.headsup.org.au/)
     """)
 
-with tabs[13]:
-    st.header("🌏 Multilingual Business Resources")
+elif tool == "🌏 Multilingual Resources":
+    st.header("🌏 Resources for Multicultural Businesses")
     st.markdown("""
-    Support for migrant-owned and multilingual businesses:
-
-    - [Translated ATO Guides](https://www.ato.gov.au/general/translations/)
-    - [Business.gov.au Translations](https://business.gov.au/news/multilingual-resources)
-    - [Small Business Multicultural Portal](https://www.smallbusiness.wa.gov.au/multicultural)
+    - [ATO in Multiple Languages](https://www.ato.gov.au/general/translations/)
+    - [Multilingual Business Help](https://business.gov.au/news/multilingual-resources)
+    - [Small Biz WA - Multicultural](https://www.smallbusiness.wa.gov.au/multicultural)
     """)
